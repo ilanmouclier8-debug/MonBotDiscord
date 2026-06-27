@@ -1,47 +1,35 @@
 import discord
 from discord.ext import commands
 import os
-import google.generativeai as genai
+from google import genai  # Import du nouveau SDK
 from dotenv import load_dotenv
 
 load_dotenv()
 
-# Configuration
-genai.configure(api_key=os.getenv('GEMINI_API_KEY'))
-
-# Utilisation d'un modèle très stable
-model = genai.GenerativeModel('models/gemini-3.5-flash')
+# Initialisation avec la clé API
+client = genai.Client(api_key=os.getenv('GEMINI_API_KEY'))
 
 intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
-# REMPLACE PAR TON ID DE SALON RÉEL
-ALLOWED_CHANNEL_ID = 1520444442631208971 
-
-@bot.event
-async def on_ready():
-    print(f'Connecté en tant que {bot.user}')
+ALLOWED_CHANNEL_ID = 1520444442631208971 # Remplace par ton ID
 
 @bot.event
 async def on_message(message):
-    # 1. Sécurité : ne jamais répondre à soi-même
-    if message.author == bot.user:
+    if message.author == bot.user or message.channel.id != ALLOWED_CHANNEL_ID:
         return
 
-    # 2. Restriction : on ne traite que le salon autorisé
-    if message.channel.id != ALLOWED_CHANNEL_ID:
-        return
-
-    # 3. Traitement
     try:
         async with message.channel.typing():
-            # On envoie uniquement le texte du message pour éviter les erreurs de format
-            response = model.generate_content(message.clean_content)
+            # Utilisation du nouveau client pour générer le contenu
+            response = client.models.generate_content(
+                model="gemini-3.5-flash",
+                contents=message.clean_content,
+            )
             await message.channel.send(response.text)
     except Exception as e:
         print(f"Erreur : {e}")
-        # On évite d'envoyer des messages trop longs ou complexes en cas d'erreur
-        await message.channel.send("Erreur de connexion au modèle.")
+        await message.channel.send("Erreur de connexion.")
 
 bot.run(os.getenv('DISCORD_TOKEN'))
