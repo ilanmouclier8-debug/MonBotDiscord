@@ -25,7 +25,7 @@ async def on_message(message):
         async with message.channel.typing():
             # Utilisation du client avec le modèle de ta liste
             response = client.models.generate_content(
-                model="gemini-2.0-flash", # Utilisons celui-ci qui est très stable
+                model="gemini-1.5-flash", # Utilisons celui-ci qui est très stable
                 contents=message.clean_content,
             )
             await message.channel.send(response.text)
