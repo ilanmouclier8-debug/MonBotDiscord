@@ -13,8 +13,8 @@ GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 
 # Configuration de Gemini
 genai.configure(api_key=GEMINI_API_KEY)
-model = genai.GenerativeModel('gemini-pro')
-
+# Utilise ceci pour le modèle Gemini 3.5 Flash
+model = genai.GenerativeModel('gemini-3.5-flash')
 # Configuration du bot
 intents = discord.Intents.default()
 intents.message_content = True
