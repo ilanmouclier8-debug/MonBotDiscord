@@ -23,15 +23,15 @@ async def on_message(message):
     # Remplace ton bloc try/except actuel par celui-ci
     try:
         async with message.channel.typing():
-            # On précise bien le nom complet du modèle
+            # Utilisation du client avec le modèle de ta liste
             response = client.models.generate_content(
-                model="gemini-3.5-flash",
+                model="gemini-2.0-flash", # Utilisons celui-ci qui est très stable
                 contents=message.clean_content,
             )
             await message.channel.send(response.text)
     except Exception as e:
-        # Ajoute ce print pour voir l'erreur réelle dans les logs Render
-        print(f"ERREUR DÉTAILLÉE : {e}") 
-        await message.channel.send("Erreur de connexion au modèle.")
+        # Affiche l'erreur complète dans les logs Render
+        print(f"ERREUR TECHNIQUE RÉELLE : {e}") 
+        await message.channel.send(f"Erreur : {e}")
 
 bot.run(os.getenv('DISCORD_TOKEN'))
