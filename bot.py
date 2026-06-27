@@ -20,16 +20,18 @@ async def on_message(message):
     if message.author == bot.user or message.channel.id != ALLOWED_CHANNEL_ID:
         return
 
+    # Remplace ton bloc try/except actuel par celui-ci
     try:
         async with message.channel.typing():
-            # Utilisation du nouveau client pour générer le contenu
+            # On précise bien le nom complet du modèle
             response = client.models.generate_content(
                 model="gemini-3.5-flash",
                 contents=message.clean_content,
             )
             await message.channel.send(response.text)
     except Exception as e:
-        print(f"Erreur : {e}")
-        await message.channel.send("Erreur de connexion.")
+        # Ajoute ce print pour voir l'erreur réelle dans les logs Render
+        print(f"ERREUR DÉTAILLÉE : {e}") 
+        await message.channel.send("Erreur de connexion au modèle.")
 
 bot.run(os.getenv('DISCORD_TOKEN'))
