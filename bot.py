@@ -30,13 +30,16 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
-    # 1. Sécurité : le bot ne répond jamais à lui-même
     if message.author == bot.user:
         return
 
-    # 2. Restriction : le bot ne répond QUE dans le salon autorisé
+    # AJOUTE CETTE LIGNE POUR VOIR L'ID DANS LES LOGS
+    print(f"Message reçu dans le salon ID : {message.channel.id}")
+
     if message.channel.id != ALLOWED_CHANNEL_ID:
         return
+    
+    # ... le reste de ton code ...
 
     # 3. Traitement avec Gemini
     try:
