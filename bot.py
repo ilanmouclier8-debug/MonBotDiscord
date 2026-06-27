@@ -33,23 +33,19 @@ async def on_message(message):
     if message.author == bot.user:
         return
 
-    # AJOUTE CETTE LIGNE POUR VOIR L'ID DANS LES LOGS
-    print(f"Message reçu dans le salon ID : {message.channel.id}")
+    # Affiche l'ID dans les logs pour être sûr qu'on est au bon endroit
+    print(f"Message reçu dans salon ID: {message.channel.id}, Attendu: {ALLOWED_CHANNEL_ID}")
 
     if message.channel.id != ALLOWED_CHANNEL_ID:
         return
-    
-    # ... le reste de ton code ...
 
-    # 3. Traitement avec Gemini
     try:
-        # Indique que le bot "écrit"
         async with message.channel.typing():
             response = model.generate_content(message.content)
             await message.channel.send(response.text)
     except Exception as e:
-        await message.channel.send("Désolé, j'ai rencontré une erreur.")
-        print(f"Erreur : {e}")
-
+        # Affiche l'erreur réelle dans les logs Render
+        print(f"Erreur détaillée : {e}")
+        await message.channel.send(f"Erreur technique : {str(e)}")
 # Lancement du bot
 bot.run(DISCORD_TOKEN)
